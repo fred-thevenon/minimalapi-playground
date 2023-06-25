@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="NSwag.ApiDescription.Client" Version="13.19.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <OpenApiReference Include="openapi/swagger.json" Namespace="WeatherService">
+            <ClassName>WeatherClient</ClassName>
+            <OutputPath>C:\src\Github\fred-thevenon\minimalapi-playground\Playground.Client\WeatherClient.cs</OutputPath>
+        </OpenApiReference>
+    </ItemGroup>
+</Project>

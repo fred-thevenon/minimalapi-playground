@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground.Api", "Playground.Api\Playground.Api.csproj", "{D92C6583-57D5-47D3-8D73-57B73B13555B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground.Client", "Playground.Client\Playground.Client.csproj", "{511D0188-EC5E-4122-9B20-1F565C8420B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{D92C6583-57D5-47D3-8D73-57B73B13555B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D92C6583-57D5-47D3-8D73-57B73B13555B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D92C6583-57D5-47D3-8D73-57B73B13555B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{511D0188-EC5E-4122-9B20-1F565C8420B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{511D0188-EC5E-4122-9B20-1F565C8420B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{511D0188-EC5E-4122-9B20-1F565C8420B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{511D0188-EC5E-4122-9B20-1F565C8420B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
