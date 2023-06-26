@@ -1,27 +1,10 @@
 using System.Diagnostics;
-using System.Reflection;
-using Microsoft.OpenApi.Models;
+using Playground.Api.OpenApi;
+using Swashbuckle.AspNetCore.Annotations;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.MapType<WeatherForecastUpload>(() => new OpenApiSchema()
-    {
-        Type = "object",
-        Properties = new Dictionary<string, OpenApiSchema>()
-        {
-            {
-                "file",
-                new OpenApiSchema { Type = "string", Format = "binary", Required = new HashSet<string> { "true" }, Nullable = false}
-            },
-            {
-                "date",
-                new OpenApiSchema { Type = "string", Format = "date-time", Required = new HashSet<string> { "true" },Nullable = false }
-            }
-        }
-    });
-});
+builder.Services.AddSwaggerGen(options => { options.EnableAnnotations(); });
 
 var app = builder.Build();
 app.UseSwagger();
@@ -48,9 +31,11 @@ app.MapGet("/weatherforecast", () =>
     .WithOpenApi();
 
 app.MapPost("/weatherforecast/upload",
+        [SwaggerOperationFilter(typeof(FileUploadOperationFilter))]
         (WeatherForecastUpload weatherForecastUpload) =>
         {
-            Debug.WriteLine(weatherForecastUpload.Date);
+            Debug.WriteLine(weatherForecastUpload.SignatureHash);
+            Debug.WriteLine(weatherForecastUpload.SignatureHorodate);
             Debug.WriteLine(weatherForecastUpload.File.Name);
             Debug.WriteLine(weatherForecastUpload.File.FileName);
             Debug.WriteLine(weatherForecastUpload.File.ContentType);
@@ -58,29 +43,12 @@ app.MapPost("/weatherforecast/upload",
             return Results.Ok("citron");
         })
     .Produces<string>(200)
-    .Accepts<WeatherForecastUpload>("multipart/form-data");
+    .WithName("UploadFile")
+    .Accepts<WeatherForecastUpload>("multipart/form-data")
+    .WithOpenApi();
+
 
 app.Run();
-
-internal class WeatherForecastUpload
-{
-    public IFormFile File { get; set; }
-    public DateTime Date { get; set; }
-
-    public static async ValueTask<WeatherForecastUpload?> BindAsync(HttpContext httpContext, ParameterInfo parameter)
-    {
-        var form = await httpContext.Request.ReadFormAsync();
-        var file = form.Files["file"]!;
-        var date = DateTime.Now;
-
-        return
-            new WeatherForecastUpload()
-            {
-                File = file,
-                Date = date
-            };
-    }
-}
 
 internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
 {

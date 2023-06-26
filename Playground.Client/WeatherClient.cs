@@ -127,17 +127,19 @@ namespace WeatherService
             }
         }
 
-        /// <returns>No Content</returns>
+        /// <param name="signatureHorodate">RFC 3339 datetime format</param>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> UploadAsync(FileParameter file, System.DateTimeOffset? date)
+        public virtual System.Threading.Tasks.Task<string> UploadFileAsync(FileParameter file, string signatureHash, string signatureHorodate)
         {
-            return UploadAsync(file, date, System.Threading.CancellationToken.None);
+            return UploadFileAsync(file, signatureHash, signatureHorodate, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
+        /// <param name="signatureHorodate">RFC 3339 datetime format</param>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> UploadAsync(FileParameter file, System.DateTimeOffset? date, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> UploadFileAsync(FileParameter file, string signatureHash, string signatureHorodate, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/weatherforecast/upload");
@@ -153,7 +155,9 @@ namespace WeatherService
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
 
-                    if (file != null)
+                    if (file == null)
+                        throw new System.ArgumentNullException("file");
+                    else
                     {
                         var content_file_ = new System.Net.Http.StreamContent(file.Data);
                         if (!string.IsNullOrEmpty(file.ContentType))
@@ -161,11 +165,18 @@ namespace WeatherService
                         content_.Add(content_file_, "file", file.FileName ?? "file");
                     }
 
-                    if (date == null)
-                        throw new System.ArgumentNullException("date");
+                    if (signatureHash == null)
+                        throw new System.ArgumentNullException("signatureHash");
                     else
                     {
-                        content_.Add(new System.Net.Http.StringContent(ConvertToString(date, System.Globalization.CultureInfo.InvariantCulture)), "date");
+                        content_.Add(new System.Net.Http.StringContent(ConvertToString(signatureHash, System.Globalization.CultureInfo.InvariantCulture)), "signatureHash");
+                    }
+
+                    if (signatureHorodate == null)
+                        throw new System.ArgumentNullException("signatureHorodate");
+                    else
+                    {
+                        content_.Add(new System.Net.Http.StringContent(ConvertToString(signatureHorodate, System.Globalization.CultureInfo.InvariantCulture)), "signatureHorodate");
                     }
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -347,8 +358,11 @@ namespace WeatherService
         [Newtonsoft.Json.JsonProperty("file", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public byte[] File { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Date { get; set; }
+        [Newtonsoft.Json.JsonProperty("signatureHorodate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset SignatureHorodate { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("signatureHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SignatureHash { get; set; }
 
     }
 

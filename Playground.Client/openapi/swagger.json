@@ -33,30 +33,49 @@
         "tags": [
           "Playground.Api"
         ],
+        "operationId": "UploadFile",
         "requestBody": {
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "file",
+                  "signatureHash",
+                  "signatureHorodate"
+                ],
                 "properties": {
                   "file": {
                     "type": "string",
-                    "format": "binary",
-                    "nullable": true
+                    "format": "binary"
                   },
-                  "date": {
+                  "signatureHash": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "string"
+                  },
+                  "signatureHorodate": {
+                    "type": "string",
+                    "description": "RFC 3339 datetime format",
+                    "format": "string"
                   }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                },
+                "signatureHorodate": {
+                  "style": "form"
+                },
+                "signatureHash": {
+                  "style": "form"
                 }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
-            "description": "No Content",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -102,9 +121,13 @@
             "format": "binary",
             "nullable": true
           },
-          "date": {
+          "signatureHorodate": {
             "type": "string",
             "format": "date-time"
+          },
+          "signatureHash": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
